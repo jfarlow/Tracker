@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3396" systemVersion="13A603" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="ImportData" representedClassName="ImportData" syncable="YES">
+        <attribute name="colDelim" optional="YES" attributeType="String" defaultValueString="&lt;tab>" syncable="YES"/>
+        <attribute name="filePath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="indexI" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="indexID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="indexT" optional="YES" attributeType="Integer 16" defaultValueString="1" syncable="YES"/>
+        <attribute name="indexX" optional="YES" attributeType="Integer 16" defaultValueString="2" syncable="YES"/>
+        <attribute name="indexY" optional="YES" attributeType="Integer 16" defaultValueString="3" syncable="YES"/>
+        <attribute name="rawdata" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rowDelim" optional="YES" attributeType="String" defaultValueString="&lt;return>" syncable="YES"/>
+        <relationship name="rows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImportRow" inverseName="importData" inverseEntity="ImportRow" syncable="YES"/>
+    </entity>
+    <entity name="ImportRow" representedClassName="ImportRow" syncable="YES">
+        <attribute name="i" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="t" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="x" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="y" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="importData" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ImportData" inverseName="rows" inverseEntity="ImportData" syncable="YES"/>
+    </entity>
+    <entity name="MainDocuments" representedClassName="MainDocuments" syncable="YES">
+        <attribute name="isOpen" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ImportData" positionX="-20" positionY="93" width="128" height="193"/>
+        <element name="ImportRow" positionX="-324" positionY="-117" width="128" height="135"/>
+        <element name="MainDocuments" positionX="-333" positionY="90" width="128" height="90"/>
+    </elements>
+</model>
