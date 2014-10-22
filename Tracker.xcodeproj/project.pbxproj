@@ -31,7 +31,6 @@
 		D0C35CB21829EC8700E74DDC /* Spot.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C35CAA1829EC8700E74DDC /* Spot.m */; };
 		D0C35CB31829EC8700E74DDC /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C35CAC1829EC8700E74DDC /* Track.m */; };
 		D0C35CB71829ECBA00E74DDC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D0C35CB41829ECBA00E74DDC /* InfoPlist.strings */; };
-		D0C35CD21829F90C00E74DDC /* Tracker-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0C35CD01829F90C00E74DDC /* Tracker-Info.plist */; };
 		D0C35CD51829F91300E74DDC /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = D0C35CD31829F91300E74DDC /* Credits.rtf */; };
 		D0E2B4D8182DDFEB0093D22F /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0E2B4D4182DDFEB0093D22F /* Document.xib */; };
 		D0E2B4D9182DDFEB0093D22F /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0E2B4D6182DDFEB0093D22F /* MainMenu.xib */; };
@@ -299,7 +298,7 @@
 		D090876D17EBC23300CD6E81 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Gartner Lab";
 				TargetAttributes = {
 					D090879B17EBC23300CD6E81 = {
@@ -335,7 +334,6 @@
 				D0C35CB71829ECBA00E74DDC /* InfoPlist.strings in Resources */,
 				D09848F0182DD82100D8DA08 /* Images.xcassets in Resources */,
 				D0E2B4D8182DDFEB0093D22F /* Document.xib in Resources */,
-				D0C35CD21829F90C00E74DDC /* Tracker-Info.plist in Resources */,
 				D0E2B4D9182DDFEB0093D22F /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

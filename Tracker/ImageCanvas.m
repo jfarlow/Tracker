@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import <QuartzCore/CIFilter.h>
 #import <math.h>
 #import "AppDelegate.h"
 #import "ImageCanvas.h"
@@ -27,6 +28,7 @@
 @synthesize scale;
 @synthesize zoom;
 @synthesize actualImage;
+@synthesize actulImageURL;
 @synthesize imageRep;
 @synthesize centeringPoint;
 @synthesize indexOfPointToMove;
@@ -44,16 +46,36 @@
 
 - (NSImage *) flipImage:(NSImage *)unflipped{
     NSAffineTransform *flipper = [NSAffineTransform transform];
-    NSSize dimensions = actualImage.size;
-    NSImage *aFrame = [actualImage copy];
-    [aFrame lockFocus];
-    [flipper scaleXBy:1.0 yBy:-1.0];
-    [flipper set];
-    [aFrame drawAtPoint:NSMakePoint(0,-dimensions.height)
-               fromRect:NSMakeRect(0,0, dimensions.width, dimensions.height)
-              operation:NSCompositeCopy fraction:1.0];
-    [aFrame unlockFocus];
-    return aFrame;
+    
+    NSSize dimensions = unflipped.size;
+    
+    
+    if (dimensions.height < 10) {
+        NSLog(@"the image has dimensions zero: %@",actulImageURL);
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        [alert setMessageText:@"ImageSize thinks its zero"];
+        [alert setInformativeText:@"this particular action passed a weird image.  Do you still crash after hitting 'OK'?"];
+        [alert addButtonWithTitle:@"OK"];
+        
+        [alert runModal];
+        
+        
+        return unflipped;
+        
+    }else{
+    
+    
+        NSImage *aFrame = [unflipped copy];
+        [aFrame lockFocus];
+        [flipper scaleXBy:1.0 yBy:-1.0];
+        [flipper set];
+        [aFrame drawAtPoint:NSMakePoint(0,-dimensions.height)
+                   fromRect:NSMakeRect(0,0, dimensions.width, dimensions.height)
+                  operation:NSCompositeCopy fraction:1.0];
+        [aFrame unlockFocus];
+        return aFrame;
+    }
     
 }
 
@@ -152,6 +174,9 @@
         float realY = actualImage.size.height;
         float pixelX = [imageRep pixelsWide];
         float pixelY = [imageRep pixelsHigh];
+        if (realX < 10) {
+            NSLog(@"the image that didn't work is called %@",actulImageURL);
+        }
         
         float fractionX = realX / pixelX;
         float fractionY = realY / pixelY;
@@ -160,7 +185,57 @@
             
             NSRect croppedImageRect = NSMakeRect( (centeringPoint.x - (canvasWidth /zoom / 2)) * fractionX, (centeringPoint.y - (canvasHeight /zoom / 2)) * fractionY, canvasWidth / zoom * fractionX , canvasHeight / zoom * fractionY);
             
-            [actualImage drawInRect:canvasEdges fromRect:croppedImageRect operation:NSCompositeCopy fraction:1.0 respectFlipped:NO hints:Nil];
+            
+            
+            
+            
+            //let's try and autoadjust the image?
+  
+            
+                NSNumber *exposureValue = [NSNumber numberWithFloat:6.5];
+                NSNumber *contrastValue = [NSNumber numberWithFloat:1.15];
+                
+                
+                CIContext *context = [[CIContext alloc] init];
+                CIImage *image = [CIImage imageWithContentsOfURL:actulImageURL];
+            
+            
+            
+                CIFilter *controlsFilter = [CIFilter filterWithName:@"CIExposureAdjust"];
+                [controlsFilter setValue:image forKey:kCIInputImageKey];
+                [controlsFilter setValue:exposureValue forKey:@"inputEV"];
+                CIImage *exposed = [controlsFilter valueForKey:@"outputImage"];
+            
+            
+                CIFilter *contrastFilter = [CIFilter filterWithName:@"CIColorControls"];
+                [contrastFilter setDefaults];
+                [contrastFilter setValue:exposed forKey:@"inputImage"];
+                [contrastFilter setValue:contrastValue forKey:@"inputContrast"];
+                CIImage *outputImage = [contrastFilter valueForKey:@"outputImage"];
+
+                
+                
+                CIFilter *transform = [CIFilter filterWithName:@"CIAffineTransform"];
+                [transform setValue:outputImage forKey:@"inputImage"];
+                
+                NSAffineTransform *affineTransform = [NSAffineTransform transform];
+                [affineTransform translateXBy:0 yBy:outputImage.extent.size.width];
+                [affineTransform scaleXBy:1 yBy:-1];
+                [transform setValue:affineTransform forKey:@"inputTransform"];
+             
+                CIImage * result = [transform valueForKey:@"outputImage"];
+                
+                
+                
+                
+                CGImageRef cgImages = [context createCGImage:result fromRect:[result extent]];
+                NSImage *newImage = [[NSImage alloc] initWithCGImage:cgImages size:NSZeroSize];
+                
+
+                [newImage drawInRect:canvasEdges fromRect:croppedImageRect operation:NSCompositeCopy fraction:1.0 respectFlipped:NO hints:Nil];
+                
+//                [actualImage drawInRect:canvasEdges fromRect:croppedImageRect operation:NSCompositeCopy fraction:1.0 respectFlipped:NO hints:Nil];
+        
         }
     }
     
@@ -236,6 +311,8 @@
     
     return newImage;
 }
+
+
 @end
 
 
@@ -533,14 +610,19 @@
         
         CIImage* ciImage = [[CIImage alloc] initWithData:[actualImage TIFFRepresentation]];
 
+        
+        
+        
         CIFilter* inverter = [CIFilter filterWithName:@"CIColorInvert"];
         [inverter setDefaults];
         [inverter setValue:ciImage forKey:@"inputImage"];
         CIImage* inverterOutput = [inverter valueForKey:@"outputImage"];
 
+        
+        
         CIFilter* contraster = [CIFilter filterWithName:@"CIWhitePointAdjust"];
         [contraster setDefaults];
-        [contraster setValue:inverterOutput forKey:@"inputImage"];
+        [contraster setValue:inverterOutput forKey:@"inputImage"]; ////inverterOutput
         [contraster setValue:newWhite forKey:@"inputColor"];
         CIImage *output = [contraster valueForKey:@"outputImage"];
         
@@ -570,15 +652,30 @@
     NSAffineTransform *flipper = [NSAffineTransform transform];
     
     NSSize dimensions = actualImage.size;
-    NSImage *aFrame = [actualImage copy];
-    [aFrame lockFocus];
-    [flipper scaleXBy:1.0 yBy:-1.0];
-    [flipper set];
-    [aFrame drawAtPoint:NSMakePoint(0,-dimensions.height)
-               fromRect:NSMakeRect(0,0, dimensions.width, dimensions.height)
-              operation:NSCompositeCopy fraction:1.0];
-    [aFrame unlockFocus];
-    return aFrame;
+    
+    if (dimensions.height < 10) {
+                NSLog(@"Error coming from FrameCanvas");
+        NSAlert *alert = [[NSAlert alloc] init];
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        [alert setMessageText:@"ImageSize thinks its zero"];
+        [alert setInformativeText:@"this particular action passed a weird image.  Do you still crash after hitting 'OK'?"];
+        [alert addButtonWithTitle:@"OK"];
+        [alert runModal];
+
+        
+        return unflipped;
+        
+    }else{
+        NSImage *aFrame = [actualImage copy];
+        [aFrame lockFocus];
+        [flipper scaleXBy:1.0 yBy:-1.0];
+        [flipper set];
+        [aFrame drawAtPoint:NSMakePoint(0,-dimensions.height)
+                   fromRect:NSMakeRect(0,0, dimensions.width, dimensions.height)
+                  operation:NSCompositeCopy fraction:1.0];
+        [aFrame unlockFocus];
+        return aFrame;
+    }
     
 }
                                                 

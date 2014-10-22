@@ -113,8 +113,13 @@
 - (IBAction)ZoomOut:(id)sender;
 - (IBAction)ZoomIn:(id)sender;
 
+@property (weak) IBOutlet NSButton *AutoAdjustImageOutlet;
+
+
+
 ////filter buttons
 - (IBAction)FilterBy:(id)sender;
+- (IBAction)ClearFilter:(id)sender;
 
 
 /////Report Labels
@@ -136,6 +141,8 @@
 - (IBAction)ExportDisplayedData:(id)sender;
 - (IBAction)ExportTrackSummaries:(id)sender;
 - (IBAction)ExportIvTGraph:(id)sender;
+- (IBAction)ExportTracksAsDat:(id)sender;
+
 
 
 

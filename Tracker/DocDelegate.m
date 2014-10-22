@@ -615,6 +615,7 @@
         NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithContentsOfURL:[NSURL URLWithString:myImage.filename]];
         //if (AutoContrastTrackImageOutlet.integerValue > 0) {
             TrackCanvasOutlet.actualImage = [TrackCanvasOutlet autoAdjustImageWithURL:imageURL];
+        TrackCanvasOutlet.actulImageURL = imageURL;
         //}else{
          //   NSImage *myImageData = [[NSImage alloc] initWithContentsOfURL:imageURL];
          //   trackCanvasOutlet.actualImage = myImageData;
@@ -812,11 +813,17 @@
     NSPredicate *currentPredicate = [EveryTrackControllerOutlet filterPredicate];
     if (index != 0) {
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K == %@",filterBy, name];
+        NSArray *predicateArray = [NSArray arrayWithObjects:currentPredicate,predicate, nil];
+        NSCompoundPredicate *predicates = [NSCompoundPredicate andPredicateWithSubpredicates:predicateArray];
         
-        [EveryTrackControllerOutlet setFilterPredicate:predicate];
+        [EveryTrackControllerOutlet setFilterPredicate:predicates];
     }else{
-        [EveryTrackControllerOutlet setFilterPredicate:nil];
+        [EveryTrackControllerOutlet setFilterPredicate:currentPredicate];
     }
+}
+
+- (IBAction)ClearFilter:(id)sender {
+    [EveryTrackControllerOutlet setFilterPredicate:nil];
 }
 
 
@@ -992,6 +999,50 @@
     Track *myTrack = [[TrackControllerOutlet selectedObjects] objectAtIndex:0];
     NSString *name = [NSString stringWithFormat:@"%@ - Track %@ Intensity vs Time",myTrack.experiment.name,myTrack.id];
     [self ExportToPDF:data withName:name];
+}
+
+- (IBAction)ExportTracksAsDat:(id)sender {
+    NSArray *displayedTracks = [TrackControllerOutlet arrangedObjects];
+    NSString *outputData = @"";
+    Experiment *theExpt = [[ExperimentControllerOutlet selectedObjects] objectAtIndex:0];
+    
+    for (Track *eachTrack in displayedTracks) {
+        
+        NSArray *allSpots = [eachTrack.spots allObjects];
+        NSSortDescriptor* sortByT = [[NSSortDescriptor alloc] initWithKey: @"t" ascending: YES];
+        allSpots = [allSpots sortedArrayUsingDescriptors:[NSArray arrayWithObject:sortByT]];
+        
+        for (Spot *eachSpot in allSpots) {
+            outputData = [outputData stringByAppendingFormat:@"%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\t%@\r\n",
+                          eachSpot.x,
+                          eachSpot.y,
+                          eachSpot.i,
+                          @"0",
+                          @"0",
+                          eachSpot.t,
+                          eachSpot.track.id,
+                          @"0",
+                          @"0",
+                          @"0"];
+        }
+    }
+    NSString *trackName = [NSString stringWithFormat:@"%@ Tracks.dat",theExpt.name];
+    [self ExportToFile:outputData withName:trackName];
+    
+    
+    
+    /*
+     
+     myImportData.indexID = [NSNumber numberWithInteger:6];
+     myImportData.indexT = [NSNumber numberWithInteger:5];
+     myImportData.indexX = [NSNumber numberWithInteger:0];
+     myImportData.indexY = [NSNumber numberWithInteger:1];
+     myImportData.indexI = [NSNumber numberWithInteger:2];
+     myImportData.rowDelim = @"\r\n";
+     myImportData.colDelim = @"\t";
+     
+     */
+    
 }
 
 

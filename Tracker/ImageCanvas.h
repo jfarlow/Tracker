@@ -16,6 +16,7 @@
 @property (nonatomic) float scale;
 @property (nonatomic) float zoom;
 @property (nonatomic) NSImage *actualImage;
+@property (nonatomic) NSURL *actulImageURL;
 @property (nonatomic) NSBitmapImageRep *imageRep;
 @property (nonatomic) NSPoint centeringPoint;
 @property (nonatomic) NSInteger indexOfPointToMove;
