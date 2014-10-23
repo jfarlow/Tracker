@@ -1,0 +1,30 @@
+Tracker is designed to allow easy evaluation and analysis of track data.  Data should be be of the form, (x, y, t) and can include intensity or another fourth variable.  Tracker was originally written to parse and evaluate diffusion data for single particle tracks.
+
+
+=== Usage ===
+
+Import track data from a CSV or other delimited text file. 
+
+There are currently presets to import a simple CSV file in the format (id, t, x, y, i) or ".pro" files output from the Rytrack.pro IDL script.
+
+Once imported successfully, the data for a given experiment will show up as a list of tracks in the bottom left.  Each track will have an ID and a duration.  Ensure that the time and pixel size for a given experiment are entered to ensure proper units.  If you do not have the experimental size/px or frames/second data, entering '1' will permit the software to run, though the results will be unitless.
+
+Tracks can be viewed by clicking on th "Track Analysis" tab in the center of the top menubar.  As you scroll through the tracks in the bottom left, the tracks will be visable in the center of the screen.  If tracks are too small or too large, the canvas can be zoomed so that the tracks are appropriately scaled - either by clicking ont the magnifying glasses, or by pressing <command-up> or <command-down>.
+
+If a set of images were also imported, the tracks can be overlayed on experimental data by clicking on the 'photo' button below each track.  Experimental images must be single frames and be 8-bit scaled single-channel images.
+
+If a track deviates signifigantly from where it is expected to be, a track can be clicked on at a particular frame and moved to its appropriate location.  Individual location data can be manually edited in for any given track in the lower tables.
+
+Track data will can be calculated automatically by toggling the "Calculate Manually" and "Constantly Calculate" button.  The three parameters calculated are the Distance(time), the Mean Squared Displacement(time) and the Diffusion Coefficient(initial tau, final tau).  In order to properly calculate the Diffusion Coefficient the Maximum tau, initial and final parameters must be set.
+
+In order to manually calculate the active parameters on a set of selected tracks, the "Calculate" button can be pressed.
+
+Tracks can be scored/classified by pressing <command-(#)>. Tracks of a particular classification can be filtered in the track table by selecting the filter type from the dropdown menu.
+
+Once data has been calculated, the data can be exported.  Any table can have its data exported as a CSV file usingt the "gear" menu.  Further, a brief analysis of your collected data can be viewed in the "Data Analysis" tab by clicking on the last tab in the top menubar.  The data can be filtered to display only for particular experiments, or particular classified data.  Any data shown can be exported by clicking "Export Displayed Data".
+
+
+
+=== Contact ===
+
+This software was written for the Gartner Lab at UCSF by Justin Farlow.  It is free for all to use, distribute and modify.
